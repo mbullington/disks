@@ -1,0 +1,133 @@
+@import url('https://fonts.googleapis.com/css?family=Rubik');
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: 'Rubik', sans-serif;
+    overflow-y: hidden;
+}
+
+.title {
+    font-size: 72px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    padding: 40px 0;
+    letter-spacing: 0.15em;
+}
+
+.turn-indicator {
+    opacity: 0;
+    padding-bottom: 16px;
+}
+
+.copyright {
+    padding-top: 22px;
+    opacity: 0.3;
+}
+
+.small-text {
+    color: black;
+    font-size: 16px;
+    text-align: center;
+    width: 100%;
+    letter-spacing: 0.05em;
+}
+
+.container {
+    position: relative;
+    margin: auto;
+    width: 520px;
+    height: 520px;
+    background-color: #E5E9F2;
+    border-radius: 20px;
+    box-shadow: 0 6px 0 0 #D3DCE6, 0 15px 35px rgba(0,0,0,.02), 0 5px 15px rgba(0,0,0,.07);
+}
+
+.background {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 10;
+}
+
+.row {
+    position: relative;
+
+    height: 130px;
+    width: 520px;
+}
+
+.tile {
+    position: absolute;
+    top: 0;
+    display: inline-block;
+
+    margin: 10px;
+    height: 110px;
+    width: 110px;
+    border-radius: 100%;
+    background-color: #D3DCE6;
+    box-shadow: inset 0 -2px 0 0 #8492A6;
+}
+
+.tile.t1 {
+    left: 0;
+}
+
+.tile.t2 {
+    left: 130px;
+}
+
+.tile.t3 {
+    left: 260px;
+}
+
+.tile.t4 {
+    left: 390px;
+}
+
+.tile.highlight-blue {
+    box-shadow: inset 0 0 0 6px #20A0FF;
+}
+
+.tile.highlight-red {
+    box-shadow: inset 0 0 0 6px #FF4949;
+}
+
+.game-container {
+    height: 520px;
+    width: 520px;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 20;
+}
+
+.disk {
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: inline-block;
+
+    margin: 10px;
+    height: 110px;
+    width: 110px;
+    border-radius: 100%;
+    will-change: transform;
+    box-shadow: inset 0 2 0 0 rgba(255,255,255,0.2);
+}
+
+.disk.hover {
+    z-index: 30;
+}
+
+.blue {
+    background-color: #20A0FF;
+}
+
+.red {
+    background-color: #FF4949;
+}
