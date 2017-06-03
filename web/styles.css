@@ -7,6 +7,12 @@ html, body {
     padding: 0;
     font-family: 'Rubik', sans-serif;
     overflow-y: hidden;
+    transition: background-color 300ms ease-in-out;
+}
+
+* {
+    -webkit-user-select: none;
+    user-select: none;
 }
 
 .title {
@@ -18,9 +24,51 @@ html, body {
     letter-spacing: 0.15em;
 }
 
+.text {
+    color: rgb(50,50,50);
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    width: 100%;
+    padding: 32px 0;
+    letter-spacing: 0.15em;   
+}
+
+.new-game, .won-game {
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    height: 100%;
+}
+
+.new-game > .text,
+.won-game > .text {
+    height: 112px;
+    box-sizing: border-box;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+.won-game > .text:first-child {
+    margin-bottom: 0;
+}
+
+.blue .won-game > .text:first-child {
+    background-color: #20A0FF;
+}
+
+.red .won-game > .text:first-child {
+    background-color: #FF4949;
+}
+
 .turn-indicator {
-    opacity: 0;
+    opacity: 1;
     padding-bottom: 16px;
+    transition: opacity 250ms ease-in-out;
+}
+
+.turn-indicator.hidden {
+    opacity: 0;
 }
 
 .copyright {
@@ -43,10 +91,10 @@ html, body {
     height: 520px;
     background-color: #E5E9F2;
     border-radius: 20px;
-    box-shadow: 0 6px 0 0 #D3DCE6, 0 15px 35px rgba(0,0,0,.02), 0 5px 15px rgba(0,0,0,.07);
+    box-shadow: 0 6px 0 0 #D3DCE6, 0 15px 35px rgba(0,0,0,.03), 0 5px 15px rgba(0,0,0,.06);
 }
 
-.background {
+.board {
     position: absolute;
     top: 0;
     left: 0;
@@ -71,6 +119,15 @@ html, body {
     border-radius: 100%;
     background-color: #D3DCE6;
     box-shadow: inset 0 -2px 0 0 #8492A6;
+        transition: box-shadow 150ms ease-in-out;
+}
+
+.tile.highlight-blue {
+    box-shadow: inset 0 0 0 6px #20A0FF;
+}
+
+.tile.highlight-red {
+    box-shadow: inset 0 0 0 6px #FF4949;
 }
 
 .tile.t1 {
@@ -89,15 +146,7 @@ html, body {
     left: 390px;
 }
 
-.tile.highlight-blue {
-    box-shadow: inset 0 0 0 6px #20A0FF;
-}
-
-.tile.highlight-red {
-    box-shadow: inset 0 0 0 6px #FF4949;
-}
-
-.game-container {
+.game {
     height: 520px;
     width: 520px;
     position: absolute;
@@ -117,11 +166,13 @@ html, body {
     width: 110px;
     border-radius: 100%;
     will-change: transform;
-    box-shadow: inset 0 2 0 0 rgba(255,255,255,0.2);
+    box-shadow: inset 0 2px 0 0 rgba(255,255,255,0.2), 0 3px 10px rgba(0,0,0,0);
+    transition: box-shadow 150ms ease-in-out;
 }
 
 .disk.hover {
     z-index: 30;
+    box-shadow: inset 0 2px 0 0 rgba(255,255,255,0.2), 0 5px 15px rgba(0,0,0,0.15);
 }
 
 .blue {
@@ -130,4 +181,37 @@ html, body {
 
 .red {
     background-color: #FF4949;
+}
+
+.overlay {
+    position: relative;
+    border-radius: 20px;
+    width: 100%;
+    height: 100%;
+    background-color: #E5E9F2;
+    z-index: 40;
+    opacity: 0.6;
+    transition: opacity 400ms ease-in-out, z-index 450ms ease-in-out;
+}
+
+.overlay > * {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.overlay .btn {
+    transition: filter 450ms ease-out;
+    filter: blur(0px);
+}
+
+.overlay.hidden .btn {
+    filter: blur(15px);
+}
+
+.overlay.hidden, .overlay > .hidden {
+    opacity: 0;
+    z-index: -1;
 }

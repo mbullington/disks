@@ -13,16 +13,26 @@
     <meta name="scaffolded-by" content="https://github.com/google/stagehand">
     <title>Disks</title>
     <link rel="stylesheet" href="styles.css">
+    <meta name="theme-color" content="#FFFFFF">
     <script defer src="main.dart" type="application/dart"></script>
     <script defer src="packages/browser/dart.js"></script>
 </head>
 
 <body>
   <div class="title">DISKS</div>
-  <div class="turn-indicator small-text">blue's turn.</div>
+  <div class="turn-indicator small-text hidden">&nbsp</div>
   <div class="container">
-    <div class="background"></div>
-    <div class="game-container"></div>
+    <div class="board"></div>
+    <div class="game"></div>
+    <div class="overlay hidden">
+      <div class="new-game hidden">
+        <div class="text btn">new game</div>
+      </div>
+      <div class="won-game hidden">
+        <div class="text">_ won!</div>
+        <div class="text btn">play again</div>
+      </div>
+    </div>
   </div>
   <div class="copyright small-text">2017 Michael Bullington</div>
 </body>

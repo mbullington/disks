@@ -23,12 +23,15 @@ class BackgroundTile {
 class GameMap {
   static int MAP_SIZE = 16;
 
-  final DivElement background;
+  final DivElement board;
 
   List<List<BackgroundTile>> _tileMap;  
   List<List<Disk>> _gameMap;
 
-  GameMap(this.background) {
+  List<Disk> _blueDisks = [];
+  List<Disk> _redDisks = [];
+
+  GameMap(this.board) {
     int blueIndex = 0;
     int redIndex = 3;
 
@@ -39,7 +42,7 @@ class GameMap {
       _tileMap.add([]);
 
       DivElement rowEl = new DivElement()..classes.add("row");
-      background.append(rowEl);
+      board.append(rowEl);
 
       for (int column = 0; column < 4; column++) {
         BackgroundTile tile = new BackgroundTile(column + 1);
@@ -50,24 +53,25 @@ class GameMap {
 
       _gameMap.add([null, null, null, null]);
 
-      _gameMap[row][blueIndex] = new Disk(GameColor.BLUE)..updatePosition(new Position(blueIndex, row));
-      _gameMap[row][redIndex] = new Disk(GameColor.RED)..updatePosition(new Position(redIndex, row));
+      _blueDisks.add(_gameMap[row][blueIndex] = new Disk(GameColor.BLUE)..updatePosition(new Position(blueIndex, row)));
+      _redDisks.add(_gameMap[row][redIndex] = new Disk(GameColor.RED)..updatePosition(new Position(redIndex, row)));
 
       blueIndex++;
       redIndex--;
     }
   }
 
-  void forEach(GameMapCallback callback) {
-    for (int i = 0; i < MAP_SIZE; i++) {
-      callback(_gameMap[(i / 4).floor()][i % 4]);
-    }
-  }
+  void reset() {
+    int blueIndex = 0;
+    int redIndex = 3;
 
-  void updatePosition(Disk disk, Position newPos) {
-    _gameMap[disk.pos.x][disk.pos.y] = null;
-    disk.updatePosition(newPos);
-    _gameMap[newPos.x][newPos.y] = disk;
+    for (int row = 0; row < 4; row++) {
+      updatePosition(_blueDisks[blueIndex], new Position(blueIndex, row));
+      updatePosition(_redDisks[3 - redIndex], new Position(redIndex, row));
+
+      blueIndex++;
+      redIndex--;
+    }
   }
 
   List<BackgroundTile> getTiles(List<Position> points) {
@@ -86,5 +90,27 @@ class GameMap {
     return true;
   }
 
-  List<Disk> operator [](int index) => _gameMap[index];
+  void forEach(GameMapCallback callback) {
+    for (int i = 0; i < MAP_SIZE; i++) {
+      callback(_gameMap[(i / 4).floor()][i % 4]);
+    }
+  }
+
+  void updatePosition(Disk disk, Position newPos) {
+    _gameMap[disk.pos.y][disk.pos.x] = null;
+    disk.updatePosition(newPos);
+    _gameMap[newPos.y][newPos.x] = disk;
+  }
+
+  Disk get(int row, int column) {
+    return _gameMap[row][column];
+  }
+
+  Disk getFromPosition(Position pos) {
+    return get(pos.y, pos.x);
+  }
+
+  List<Disk> operator [](int row) {
+    return _gameMap[row];
+  }
 }

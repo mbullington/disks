@@ -1,209 +1,93 @@
 part of disks.lib;
 
-class GameContainer {
-  DivElement _container;
-  DivElement _background;
+abstract class GameState {
+  String get cssName;
+  bool get isOverlay;
 
+  final GameContainer container;
+
+  GameState(this.container);
+
+  void init(DivElement div);
+
+  void push(DivElement div);
+
+  void pop(DivElement div);
+}
+
+class GameContainer {
+  final DivElement container;
   final Element body;
   final DivElement turnIndicator;
 
+  DivElement _board;
+  DivElement get board => _board;
+
+  DivElement _gameEl;
+  DivElement get gameEl => _gameEl;
+
+  DivElement _overlay;
+  DivElement get overlay => _overlay;
+
   GameMap _map;
+  GameMap get map => _map;
+
   GameMechanics _mechanics;
+  GameMechanics get mechanics => _mechanics;
 
   // blue always starts
   GameColor turnColor = GameColor.BLUE;
+  GameColor winner;
 
-  GameContainer(DivElement container, this.body, this.turnIndicator) {
-    _container = container.querySelector(".game-container");
-    _background = container.querySelector(".background");
+  GameState state;
 
-    _map = new GameMap(_background);
-    _mechanics = new GameMechanics(_map);
+  Map<Type, GameState> _states = {};
+  Map<GameState, DivElement> _stateDivs = {};
 
-    _map.forEach((Disk disk) {
+  GameContainer({this.container, this.body, this.turnIndicator}) {
+    this._board = container.querySelector(".board");
+    this._gameEl = container.querySelector(".game");
+    this._overlay = container.querySelector(".overlay");
+
+    _map = new GameMap(_board);
+    _mechanics = new GameMechanics(map);
+
+    map.forEach((Disk disk) {
       if (disk != null) {
-        _container.append(disk.element);
-        _onClick(disk);
-        _onTouch(disk);
+        gameEl.append(disk.element);
       }
     });
 
-    body.classes..add(turnColor.cssName);
-    turnIndicator.innerHtml = "${turnColor.cssName}'s turn.";
-    turnIndicator.style.opacity = "1";
+    addGameState(new NewGameState(this));
+    addGameState(new LocalGameState(this));
+    addGameState(new WonGameState(this));
+
+    setGameState(NewGameState);
   }
 
-  void endTurn() {
-    String oldCssName = turnColor.cssName;
-    turnColor = turnColor.opposite;
+  void addGameState(GameState state) {
+    _states[state.runtimeType] = state;
+    DivElement div = _stateDivs[state] = state.isOverlay ?
+        overlay.querySelector(".${state.cssName}") :
+        container.querySelector(".${state.cssName}");
 
-    body.classes..remove(oldCssName)..add(turnColor.cssName);
-    turnIndicator.innerHtml = "${turnColor.cssName}'s turn.";
+    state.init(div);
   }
 
-  void _onClick(Disk disk) {
-    num x = 0;
-    num y = 0;
+  void setGameState(Type stateType) {
+    GameState oldState = state;
+    GameState newState = _states[stateType];
+    this.state = newState;
 
-    StreamSubscription sub;
-    List<Position> possiblePos;
-    List<BackgroundTile> tiles;
-
-    disk.element.onMouseDown.listen((MouseEvent e) {
-      if (disk.color != turnColor) {
-        return;
-      }
-
-      num startX = e.page.x;
-      num startY = e.page.y;
-
-      possiblePos = diskHover(disk);
-      tiles = _map.getTiles(possiblePos);
-
-      tiles.forEach((tile) => tile.highlight(disk.color));
-
-      x = 0;
-      y = 0;
-      
-      sub = window.onMouseMove.listen((MouseEvent ev) {
-        x = ev.page.x;
-        y = ev.page.y;
-        disk.moveSlightly(x - startX, y - startY);
-      });
-    });
-
-    window.onMouseUp.listen((MouseEvent e) {
-      if (sub != null) {
-        sub.cancel();
-        sub = null;
-
-        tiles.forEach((tile) => tile.unhighlight());
-        diskPlace(disk, x, y, possiblePos);
-      }
-    });
-  } 
-
-  void _onTouch(Disk disk) {
-    num x = 0;
-    num y = 0;
-
-    StreamSubscription sub;
-    List<Position> possiblePos;
-    List<BackgroundTile> tiles;    
-    int identifier = -1;
-
-    disk.element.onTouchStart.listen((TouchEvent e) {
-      if (disk.color != turnColor) {
-        return;
-      }
-
-      if (identifier > -1) {
-        return;
-      }
-
-      identifier = e.changedTouches[0].identifier;
-      num startX = e.changedTouches[0].page.x;
-      num startY = e.changedTouches[0].page.y;
-
-      possiblePos = diskHover(disk);
-      tiles = _map.getTiles(possiblePos);
-
-      tiles.forEach((tile) => tile.highlight(disk.color));
-
-      x = 0;
-      y = 0;
-      
-      sub = window.onTouchMove.listen((TouchEvent ev) {
-        ev.changedTouches.forEach((Touch t) {
-          if (t.identifier != identifier) {
-            return;
-          }
-          
-          x = t.page.x;
-          y = t.page.y;
-          disk.moveSlightly(x - startX, y - startY);
-        });
-      });
-    });
-
-    window.onTouchEnd.listen((TouchEvent e) {
-      if (sub == null) {
-        return;
-      }
-
-      e.changedTouches.forEach((Touch t) {
-        if (t.identifier == identifier) {
-          sub.cancel();
-          sub = null;
-          identifier = -1;
-
-          tiles.forEach((tile) => tile.unhighlight());
-          diskPlace(disk, x, y, possiblePos);
-        }
-      });
-    });
-  }
-
-  List<Position> diskHover(Disk disk) {
-    disk.startHover();
-
-    return getPossibleMovements(disk);
-  }
-
-  void diskPlace(Disk disk, int x, int y, List<Position> possiblePos) {
-    disk.stopHover();
-
-    num gameX = ((x - _container.parent.offsetLeft) / tileHeight).floor();
-    num gameY = ((y - _container.parent.offsetTop) / tileHeight).floor();
-    Position gamePos = new Position(gameX, gameY);
-
-    if (possiblePos.any((pos) => gamePos.x == pos.x && gamePos.y == pos.y)) {
-      _map.updatePosition(disk, gamePos);
-
-      GameColor winner = _mechanics.getWinner();
-      if (winner != null) {
-        print("${winner == GameColor.RED ? "red" : "blue"} wins!");
-      }
-
-      endTurn();
-    } else {
-      disk.moveSlightly(0, 0);
-    }
-  }
-
-  List<Position> getPossibleMovements(Disk disk) {
-    Position pos = disk.pos;
-    List<Position> returned = [];
-
-    Position _loop(Function updateFunc) {
-      Position p = updateFunc(pos);
-      Position p2;
-
-      while (p != null) {
-        if (!_map.hasPoint(p)) {
-          if (p2 != null) {
-            returned.add(p2);
-          }
-          break;
-        }
-
-        if (_map[p.x][p.y] == null) {
-          p2 = p;
-          p = updateFunc(p);
-        } else {
-          if (p2 != null) {
-            returned.add(p2);
-          }
-          break;
-        }
-      }
+    oldState?.pop(_stateDivs[oldState]);
+    if ((oldState == null || oldState.isOverlay) && !newState.isOverlay) {
+      overlay.classes.add("hidden");
     }
 
-    _loop((Position pos) => new Position(pos.x + 1, pos.y));
-    _loop((Position pos) => new Position(pos.x - 1, pos.y));
-    _loop((Position pos) => new Position(pos.x, pos.y + 1));
-    _loop((Position pos) => new Position(pos.x, pos.y - 1));
+    if (newState.isOverlay) {
+      overlay.classes.remove("hidden");
+    }
 
-    return returned;
+    newState.push(_stateDivs[newState]);
   }
 }

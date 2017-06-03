@@ -8,7 +8,8 @@ import "dart:html";
 
 void main() {
   GameContainer container = new GameContainer(
-      querySelector(".container"),
-      document.body,
-      querySelector(".turn-indicator"));
+      container: querySelector(".container"),
+      turnIndicator: querySelector(".turn-indicator"),
+      body: document.body,
+      );
 }
