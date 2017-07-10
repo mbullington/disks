@@ -13,7 +13,7 @@ class WonGameState extends GameState {
   }
 
   _onClick(_) {
-    container.setGameState(LocalGameState);
+    container.setGameState(NewGameState);
   }
 
   @override

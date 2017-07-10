@@ -1,21 +1,19 @@
 <!DOCTYPE html>
 
-<!--
-  Copyright (c) 2017, <your name>. All rights reserved. Use of this source code
-  is governed by a BSD-style license that can be found in the LICENSE file.
--->
-
-<html>
+<html lang="en">
 <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=628, user-scalable=no">
-    <meta name="scaffolded-by" content="https://github.com/google/stagehand">
-    <title>Disks</title>
-    <link rel="stylesheet" href="styles.css">
-    <meta name="theme-color" content="#FFFFFF">
-    <script defer src="main.dart" type="application/dart"></script>
-    <script defer src="packages/browser/dart.js"></script>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=628, user-scalable=no">
+  <meta name="scaffolded-by" content="https://github.com/google/stagehand">
+  <meta name="theme-color" content="#FFFFFF">
+
+  <title>DISKS</title>
+  <link rel="stylesheet" href="styles.css">
+    
+  <script defer src="main.dart" type="application/dart"></script>
+  <script defer src="packages/browser/dart.js"></script>
+  <script src="js/anime.min.js"></script>
 </head>
 
 <body>
@@ -25,15 +23,20 @@
     <div class="board"></div>
     <div class="game"></div>
     <div class="overlay hidden">
-      <div class="new-game hidden">
-        <div class="text btn">new game</div>
+      <div class="overlay-state new-game hidden">
+        <div class="btn">v. player</div>
+        <div class="btn disabled">v. ai</div>
+        <div class="btn disabled">how to play</div>
       </div>
-      <div class="won-game hidden">
+      <div class="overlay-state won-game hidden">
         <div class="text">_ won!</div>
-        <div class="text btn">play again</div>
+        <div class="btn">play again</div>
       </div>
     </div>
   </div>
-  <div class="copyright small-text">2017 Michael Bullington</div>
+  
+  <div class="copyright">2017 Michael Bullington</div>
+  <div class="ad-disclaimer">The ad below helps pay for my college. Thank you. 😊</div>
+  <iframe class="ad" src="ads.html" width="468" height="60"></iframe>
 </body>
 </html>

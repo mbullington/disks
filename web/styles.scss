@@ -1,0 +1,324 @@
+// ## FONTS ##
+
+@import url('https://fonts.googleapis.com/css?family=Rubik');
+
+// ## VARIABLES ##
+
+$base-blue: #20A0FF;
+$base-red: #FF4949;
+
+$base-grey: #E5E9F2;
+$dark-grey: #D3DCE6;
+$darkest-grey: #8492A6;
+
+$text-color: rgb(50,50,50);
+
+$soft-shadow: 0 15px 35px rgba(0,0,0,.03), 0 5px 15px rgba(0,0,0,.06);
+$hard-shadow: 0 15px 35px rgba(0,0,0,.09), 0 5px 15px rgba(0,0,0,.14);
+
+// ## BASE STYLES ##
+
+* {
+    box-sizing: border-box;
+
+    -webkit-user-select: none;
+    user-select: none;
+}
+
+html, body {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+
+    font-family: 'Rubik', sans-serif;
+
+    transition: background-color 300ms ease-in-out;
+}
+
+.blue {
+    background-color: $base-blue;
+}
+
+.red {
+    background-color: $base-red;
+}
+
+// ## UI & TEXT STYLES ##
+
+.title {
+    width: 100%;
+    padding: 40px 0;
+    font-size: 72px;
+    font-weight: bold;
+    
+    text-align: center;
+    letter-spacing: 0.15em;
+}
+
+.text {
+    width: 100%;
+    height: 112px;
+    padding: 32px 0;
+
+    font-size: 48px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.15em;  
+
+    color: $text-color; 
+}
+
+.turn-indicator {
+    padding-bottom: 16px;
+
+    opacity: 1;
+    transition: opacity 250ms ease-in-out;
+}
+
+.turn-indicator.hidden {
+    opacity: 0;
+}
+
+@mixin small-text-common() {
+    width: 100%;
+    
+    text-align: center;
+    letter-spacing: 0.05em;
+
+    color: black;
+}
+
+.small-text {
+    font-size: 24px;
+
+    @include small-text-common();
+}
+
+.copyright {
+    padding-top: 22px;
+    font-size: 18px;
+    opacity: 0.3;
+
+    @include small-text-common();
+}
+
+.ad-disclaimer {
+    padding-top: 24px;
+    padding-bottom: 8px;
+    font-size: 16px;
+    opacity: 0.3;
+
+    @include small-text-common();
+}
+
+.ad {
+    display: block;
+    width: 468px;
+    margin-left: auto;
+    margin-right: auto;
+
+    border: 0;
+}
+
+// ## GAME STYLES ##
+// everything in this section is a child of .container
+
+// styles shared between .tile and .disk
+@mixin container-common() {
+    display: inline-block;
+    width: 110px;
+    height: 110px;
+    margin: 10px;
+
+    border-radius: 100%;
+}
+
+.container {
+    position: relative;
+
+    width: 520px;
+    height: 520px;
+    margin: auto;
+    
+    border-radius: 20px;
+    background-color: $base-grey;
+    box-shadow: 0 6px 0 0 $dark-grey, $soft-shadow;
+}
+
+.red .container,
+.blue .container {
+    box-shadow: 0 6px 0 0 $dark-grey, $hard-shadow;
+}
+
+.board {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    z-index: 10;
+}
+
+.board .row {
+    position: relative;
+
+    height: 130px;
+    width: 520px;
+}
+
+.board .tile {
+    position: absolute;
+    top: 0;
+
+    @include container-common();
+
+    background-color: $dark-grey;
+    box-shadow: inset 0 -2px 0 0 $darkest-grey;
+    
+    transition: box-shadow 150ms ease-in-out;
+
+    &.highlight-blue {
+        box-shadow: inset 0 0 0 6px $base-blue;
+    }
+
+    &.highlight-red {
+        box-shadow: inset 0 0 0 6px $base-red;
+    }
+
+    &.t1 {
+        left: 0;
+    }
+
+    &.t2 {
+        left: 130px;
+    }
+
+    &.t3 {
+        left: 260px;
+    }
+
+    &.t4 {
+        left: 390px;
+    }
+}
+
+.game {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    width: 520px;
+    height: 520px;
+
+    z-index: 20;
+}
+
+.game .disk {
+    position: absolute;
+    top: 0;
+    left: 0;
+
+    @include container-common();
+
+    box-shadow: inset 0 2px 0 0 rgba(255,255,255,0.2), 0 3px 10px rgba(0,0,0,0);
+
+    transition: box-shadow 150ms ease-in-out;
+    will-change: transform;
+
+    &.hover {        
+        box-shadow: inset 0 2px 0 0 rgba(255,255,255,0.2), 0 5px 15px rgba(0,0,0,0.15);
+
+        z-index: 30;
+    }
+}
+
+// ## OVERLAY STYLES ##
+// everything in this section is a child of .overlay
+
+@mixin overlay-state-child() {
+    margin-top: auto;
+    margin-bottom: auto;
+
+    opacity: 0.8;
+}
+
+.overlay {
+    position: relative;
+
+    width: 100%;
+    height: 100%;
+
+    opacity: 1;
+    border-radius: 20px;
+    background-color: rgba(229,233,242,0.6);
+
+    transition: opacity 400ms ease-in-out, z-index 450ms ease-in-out;
+    z-index: 40;
+
+    &.hidden,
+    & > .hidden {
+        opacity: 0;
+
+        z-index: -1;
+    }
+}
+
+.overlay-state {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0; 
+
+    display: flex;
+    flex-direction: column;
+    align-content: center;
+    height: 100%;
+}
+
+.overlay .btn {
+    width: 286px;
+    height: 96px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 32px 0;
+    
+    font-size: 28px;
+    font-weight: bold;
+    text-align: center;
+    letter-spacing: 0.15em;    
+
+    color: $text-color;
+    border-radius: 48px;
+    background-color: white;
+    box-shadow: $soft-shadow;
+    
+    transition: box-shadow 300ms ease-in-out;
+
+    @include overlay-state-child();
+
+    &:active {
+        box-shadow: $hard-shadow;
+    }
+
+    &.disabled {
+        opacity: 0.3;
+    }
+}
+
+.overlay .text {
+    @include overlay-state-child();
+}
+
+.won-game > .text:first-child {
+    margin-bottom: 0;
+}
+
+.blue .won-game > .text:first-child {
+    background-color: $base-blue;
+}
+
+.red .won-game > .text:first-child {
+    background-color: $base-red;
+}
