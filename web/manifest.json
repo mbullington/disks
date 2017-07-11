@@ -1,0 +1,7 @@
+{
+    "short_name": "DISKS",
+    "name": "DISKS",
+    "background_color": "#FFFFFF",
+    "display": "standalone",
+    "orientation": "portrait"
+}

@@ -66,8 +66,8 @@ class GameMap {
     int redIndex = 3;
 
     for (int row = 0; row < 4; row++) {
-      updatePosition(_blueDisks[blueIndex], new Position(blueIndex, row));
-      updatePosition(_redDisks[3 - redIndex], new Position(redIndex, row));
+      updatePosition(_blueDisks[row], new Position(blueIndex, row));
+      updatePosition(_redDisks[row], new Position(redIndex, row));
 
       blueIndex++;
       redIndex--;
@@ -97,7 +97,10 @@ class GameMap {
   }
 
   void updatePosition(Disk disk, Position newPos) {
-    _gameMap[disk.pos.y][disk.pos.x] = null;
+    if (_gameMap[disk.pos.y].contains(disk)) {
+      _gameMap[disk.pos.y][disk.pos.x] = null;
+    }
+    
     disk.updatePosition(newPos);
     _gameMap[newPos.y][newPos.x] = disk;
   }

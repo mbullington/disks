@@ -13,7 +13,7 @@ class LocalGameState extends GameState {
   @override
   void init(DivElement div) {
     _div = div;
-    container.turnIndicator.classes.add("hidden");
+    container.info.pop();
   }
 
   @override
@@ -29,12 +29,12 @@ class LocalGameState extends GameState {
     container.map.reset();
     setTurnColor(GameColor.BLUE);
 
-    container.turnIndicator.classes.remove("hidden");
+    container.info.push();
   }
   
   @override
   void pop(DivElement div) {
-    container.turnIndicator.classes.add("hidden");
+    container.info.pop();
     _subscriptions.forEach((sub) => sub.cancel());
   }
 
@@ -51,7 +51,7 @@ class LocalGameState extends GameState {
     container.body.classes.add(container.turnColor.cssName);
     
     document.head.querySelector('meta[name="theme-color"]').setAttribute("content", container.turnColor == GameColor.BLUE ? "#20A0FF": "#FF4949");
-    container.turnIndicator.innerHtml = "${container.turnColor.cssName}'s turn.";
+    container.info.setTurnIndicator();
   }
 
   void _onClick(Disk disk) {
@@ -126,7 +126,12 @@ class LocalGameState extends GameState {
       x = 0;
       y = 0;
       
-      sub = window.onTouchMove.listen((TouchEvent ev) {
+      sub = document.body.onTouchMove.listen((TouchEvent ev) {
+        // prevent pull-to-refresh on Chrome iOS
+        // prevent rubber banding on Mobile Safari
+        ev.preventDefault();
+        ev.stopPropagation();
+        
         ev.changedTouches.forEach((Touch t) {
           if (t.identifier != identifier) {
             return;

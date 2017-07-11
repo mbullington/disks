@@ -9,8 +9,6 @@ class Disk {
   Disk(this.color) {
     element = new DivElement()
       ..classes.addAll(["disk", color == GameColor.RED ? "red" : "blue"]);
-
-    updatePosition(this.pos);
   }
 
   void updatePosition(Position pos) {

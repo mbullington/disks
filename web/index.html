@@ -5,20 +5,24 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=628, user-scalable=no">
-  <meta name="scaffolded-by" content="https://github.com/google/stagehand">
   <meta name="theme-color" content="#FFFFFF">
 
   <title>DISKS</title>
+
+  <link rel="manifest" href="/manifest.json">
   <link rel="stylesheet" href="styles.css">
     
   <script defer src="main.dart" type="application/dart"></script>
   <script defer src="packages/browser/dart.js"></script>
-  <script src="js/anime.min.js"></script>
 </head>
 
 <body>
   <div class="title">DISKS</div>
-  <div class="turn-indicator small-text hidden">&nbsp</div>
+  <div class="game-info hidden">
+    <div class="left-button">help</div>
+    <div class="turn-indicator small-text">&nbsp</div>
+    <div class="right-button">forfeit</div>
+  </div>
   <div class="container">
     <div class="board"></div>
     <div class="game"></div>
@@ -26,11 +30,56 @@
       <div class="overlay-state new-game hidden">
         <div class="btn">v. player</div>
         <div class="btn disabled">v. ai</div>
-        <div class="btn disabled">how to play</div>
+        <div class="btn btn--how-to-play">how to play</div>
       </div>
       <div class="overlay-state won-game hidden">
         <div class="text">_ won!</div>
         <div class="btn">play again</div>
+      </div>
+    </div>
+  </div>
+  <div class="popup how-to-play hidden">
+    <div class="popup-container">
+      <div class="popup-title">
+        <!-- Huge thanks to Octicons! -->
+        <svg width="56" height="56" class="octicon" viewBox="0 0 12 16" version="1.1" aria-hidden="true"><path fill-rule="evenodd" d="M7.48 8l3.75 3.75-1.48 1.48L6 9.48l-3.75 3.75-1.48-1.48L4.52 8 .77 4.25l1.48-1.48L6 6.52l3.75-3.75 1.48 1.48z"></path></svg>
+        <div class="small-text">how to play</div>
+        <div class="stub-56"></div>
+      </div>
+      <div class="popup-content">
+        Welcome to DISKS! DISKS is a two-person puzzle game, so either grab a friend or play the AI.
+        <br>
+        <br>
+        In DISKS, you control one color of disk (the default being blue), and you must move your disks
+        to victory! Disks move the maximum distance either horizontally or vertically. A visual indicator
+        will help you if you touch a disk, like shown below with the disk in the bottom center.
+        <br>
+        <img width="452" height="452" src="assets/example-1.png" />
+        <br>
+        In DISKS, there are three patterns you can move your pieces into to win the game. Take note that
+        each of these methods include one or more corners, so securing a corner is extremely important
+        for winning the game, and making sure your opponent doesn't! These patterns are shown in order
+        of increasing difficulty.
+        <br>
+        <br>
+        The first of these patterns is a 2x2 cube in any corner of the board. Forming a cube that's not in
+        a corner is impressive, but it doesn't win the game! An example is shown below with the blue color.
+        <br>
+        <img width="452" height="452" src="assets/example-2.png" />
+        <br>
+        The second of these patterns is a 4x1 line along any of the edges. Like the previous method, the line
+        must be on an edge to win the game. An example is shown below with the blue color.
+        <br>
+        <img width="452" height="452" src="assets/example-3.png" />
+        <br>
+        The third, and most difficult, pattern to win the game is having a disk in each corner of the map. Again,
+        an example is shown below with the blue color.
+        <br>
+        <img width="452" height="452" src="assets/example-4.png" />
+        <br>
+        That's all there is to DISKS! Overtime, you'll develop strategies and play styles, but that's best left
+        to discovering on your own. Hope you enjoy DISKS!
+        <br>
       </div>
     </div>
   </div>

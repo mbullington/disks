@@ -18,7 +18,6 @@ abstract class GameState {
 class GameContainer {
   final DivElement container;
   final Element body;
-  final DivElement turnIndicator;
 
   DivElement _board;
   DivElement get board => _board;
@@ -35,22 +34,27 @@ class GameContainer {
   GameMechanics _mechanics;
   GameMechanics get mechanics => _mechanics;
 
+  GameInfo _info;
+  GameInfo get info => _info;
+
   // blue always starts
   GameColor turnColor = GameColor.BLUE;
   GameColor winner;
 
   GameState state;
+  GameState modalState;
 
   Map<Type, GameState> _states = {};
   Map<GameState, DivElement> _stateDivs = {};
 
-  GameContainer({this.container, this.body, this.turnIndicator}) {
+  GameContainer({this.container, this.body, DivElement gameInfo}) {
     this._board = container.querySelector(".board");
     this._gameEl = container.querySelector(".game");
     this._overlay = container.querySelector(".overlay");
 
     _map = new GameMap(_board);
     _mechanics = new GameMechanics(map);
+    _info = new GameInfo(this, gameInfo);
 
     map.forEach((Disk disk) {
       if (disk != null) {
@@ -61,6 +65,7 @@ class GameContainer {
     addGameState(new NewGameState(this));
     addGameState(new LocalGameState(this));
     addGameState(new WonGameState(this));
+    addGameState(new HowToPlayState(this));
 
     setGameState(NewGameState);
   }
@@ -69,7 +74,7 @@ class GameContainer {
     _states[state.runtimeType] = state;
     DivElement div = _stateDivs[state] = state.isOverlay ?
         overlay.querySelector(".${state.cssName}") :
-        container.querySelector(".${state.cssName}");
+        document.body.querySelector(".${state.cssName}");
 
     state.init(div);
   }
@@ -89,5 +94,27 @@ class GameContainer {
     }
 
     newState.push(_stateDivs[newState]);
+  }
+
+  void setModalState(Type stateType) {
+    if (this.modalState != null) {
+      return;
+    }
+
+    GameState newState = _states[stateType];
+    this.modalState = newState;
+
+    newState.push(_stateDivs[newState]);
+  }
+
+  void removeModalState() {
+    if (this.modalState == null) {
+      return;
+    }
+
+    GameState oldState = modalState;
+    this.modalState = null;
+
+    oldState.pop(_stateDivs[oldState]);
   }
 }

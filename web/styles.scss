@@ -16,13 +16,38 @@ $text-color: rgb(50,50,50);
 $soft-shadow: 0 15px 35px rgba(0,0,0,.03), 0 5px 15px rgba(0,0,0,.06);
 $hard-shadow: 0 15px 35px rgba(0,0,0,.09), 0 5px 15px rgba(0,0,0,.14);
 
+// z-index variables
+/*
+popup
+overlay
+disk (hover)
+game
+board
+overlay (hidden)
+*/
+
+$board-z: 10;
+
+$game-z: 20;
+
+$disk-z--hover: 30;
+
+$overlay-z: 40;
+$overlay-z--hidden: -1;
+
+$popup-z: 50;
+
 // ## BASE STYLES ##
 
 * {
     box-sizing: border-box;
 
+    -webkit-tap-highlight-color: rgba(0,0,0,0);
     -webkit-user-select: none;
     user-select: none;
+
+    // overridden in .container and .game
+    contain: content;
 }
 
 html, body {
@@ -47,6 +72,13 @@ html, body {
 
 // ## UI & TEXT STYLES ##
 
+@mixin small-text-common() {
+    text-align: center;
+    letter-spacing: 0.05em;
+
+    color: black;
+}
+
 .title {
     width: 100%;
     padding: 40px 0;
@@ -70,27 +102,46 @@ html, body {
     color: $text-color; 
 }
 
-.turn-indicator {
+.game-info {
+    display: flex;
+    width: 520px;
+    margin-left: auto;
+    margin-right: auto;
     padding-bottom: 16px;
 
     opacity: 1;
     transition: opacity 250ms ease-in-out;
+
+    &.hidden {
+        opacity: 0;
+    }
 }
 
-.turn-indicator.hidden {
-    opacity: 0;
+.left-button,
+.right-button {
+    width: 100px;
+
+    font-size: 24px;
+    text-decoration: underline;
+
+    @include small-text-common();
+
+    &.left-button {
+        text-align: left;
+    }
+
+    &.right-button {
+        text-align: right;
+    }
 }
 
-@mixin small-text-common() {
-    width: 100%;
-    
-    text-align: center;
-    letter-spacing: 0.05em;
-
-    color: black;
+.turn-indicator {
+    flex: 1;
 }
 
 .small-text {
+    width: 100%;
+
     font-size: 24px;
 
     @include small-text-common();
@@ -98,7 +149,10 @@ html, body {
 
 .copyright {
     padding-top: 22px;
+    width: 100%;
+
     font-size: 18px;
+
     opacity: 0.3;
 
     @include small-text-common();
@@ -107,7 +161,10 @@ html, body {
 .ad-disclaimer {
     padding-top: 24px;
     padding-bottom: 8px;
+    width: 100%;
+
     font-size: 16px;
+
     opacity: 0.3;
 
     @include small-text-common();
@@ -145,6 +202,9 @@ html, body {
     border-radius: 20px;
     background-color: $base-grey;
     box-shadow: 0 6px 0 0 $dark-grey, $soft-shadow;
+
+    // we remove paint so the disks can be dragged off the board
+    contain: layout style;
 }
 
 .red .container,
@@ -157,7 +217,7 @@ html, body {
     top: 0;
     left: 0;
 
-    z-index: 10;
+    z-index: $board-z;
 }
 
 .board .row {
@@ -211,7 +271,10 @@ html, body {
     width: 520px;
     height: 520px;
 
-    z-index: 20;
+    z-index: $game-z;
+
+    // we remove paint so the disks can be dragged off the board
+    contain: layout style;
 }
 
 .game .disk {
@@ -229,7 +292,7 @@ html, body {
     &.hover {        
         box-shadow: inset 0 2px 0 0 rgba(255,255,255,0.2), 0 5px 15px rgba(0,0,0,0.15);
 
-        z-index: 30;
+        z-index: $disk-z--hover;
     }
 }
 
@@ -253,14 +316,15 @@ html, body {
     border-radius: 20px;
     background-color: rgba(229,233,242,0.6);
 
-    transition: opacity 400ms ease-in-out, z-index 450ms ease-in-out;
-    z-index: 40;
+    transition: opacity 400ms ease-in-out, z-index 450ms step-start;
+    z-index: $overlay-z;
 
     &.hidden,
     & > .hidden {
         opacity: 0;
 
-        z-index: -1;
+        transition: opacity 400ms ease-in-out, z-index 450ms step-end;
+        z-index: $overlay-z--hidden;
     }
 }
 
@@ -321,4 +385,97 @@ html, body {
 
 .red .won-game > .text:first-child {
     background-color: $base-red;
+}
+
+// ## POPUP STYLES ##
+
+.popup {
+    position: absolute;
+    top: 0;
+
+    width: 100%;
+    height: 100%;
+
+    background-color: white;
+    box-shadow: $hard-shadow;
+
+    z-index: $popup-z;
+
+    transform: translate(0,0);
+    transition: transform 500ms ease-in-out;
+
+    &.hidden {
+        transform: translate(0, 100%);
+    }
+}
+
+.blue .popup {
+    background-color: $base-blue;
+}
+
+.red .popup {
+    background-color: $base-red;
+}
+
+.popup-container {
+    position: relative;
+
+    display: flex;
+    flex-direction: column;
+
+    width: 520px;
+    height: 100%;
+    margin: auto;
+
+    transition: opacity 1000ms ease-in-out;
+    opacity: 1;
+}
+
+.popup.hidden .popup-container {
+    opacity: 0;
+}
+
+$popup-title-height: 80px;
+
+.popup-title {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    height: $popup-title-height;
+
+    border-bottom: 3px solid black;
+
+    & .small-text {
+        flex: 1;
+        line-height: $popup-title-height;
+    }
+
+    & .stub-56 {
+        width: 56px;
+        height: 56px;
+    }
+}
+
+.popup-content {
+    overflow-y: scroll;
+    -webkit-overflow-scrolling: touch;
+
+    flex: 1;
+    padding-top: 16px;
+    padding-bottom: 32px;
+    
+    font-size: 28px;
+    
+    font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+
+    color: black;
+}
+
+.popup-content img {
+    width: 452px;
+    height: 500px;
+    padding-top: 16px;
+    padding-bottom: 32px;
 }

@@ -9,7 +9,13 @@ import "dart:html";
 void main() {
   GameContainer container = new GameContainer(
       container: querySelector(".container"),
-      turnIndicator: querySelector(".turn-indicator"),
+      gameInfo: querySelector(".game-info"),
       body: document.body,
       );
+
+  window.onTouchMove.listen((TouchEvent e) {
+    if (container.modalState == null) {
+      e.preventDefault();
+    }
+  });
 }

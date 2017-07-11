@@ -6,11 +6,13 @@ import 'dart:math' as math;
 
 part 'disks/util.dart';
 part 'disks/disk.dart';
+part 'disks/game_info.dart';
 part 'disks/game_map.dart';
 part 'disks/game_mechanics.dart';
 
 part 'disks/states/new_game.dart';
 part 'disks/states/won_game.dart';
+part 'disks/states/how_to_play.dart';
 
 part 'disks/states/local_game.dart';
 
