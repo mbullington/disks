@@ -1,0 +1,309 @@
+@import url("https://fonts.googleapis.com/css?family=Rubik");
+/*
+popup
+overlay
+disk (hover)
+game
+board
+overlay (hidden)
+*/
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-user-select: none;
+  user-select: none;
+  contain: content; }
+
+html, body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  font-family: 'Rubik', sans-serif;
+  transition: background-color 300ms ease-in-out; }
+
+.blue {
+  background-color: #20A0FF; }
+
+.red {
+  background-color: #FF4949; }
+
+.title {
+  width: 100%;
+  padding: 40px 0;
+  font-size: 72px;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0.15em; }
+
+.text {
+  width: 100%;
+  height: 112px;
+  padding: 32px 0;
+  font-size: 48px;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0.15em;
+  color: #323232; }
+
+.game-info {
+  display: flex;
+  width: 520px;
+  margin-left: auto;
+  margin-right: auto;
+  padding-bottom: 16px;
+  opacity: 1;
+  transition: opacity 250ms ease-in-out; }
+  .game-info.hidden {
+    opacity: 0; }
+
+.left-button,
+.right-button {
+  width: 100px;
+  font-size: 24px;
+  text-decoration: underline;
+  text-align: center;
+  letter-spacing: 0.05em;
+  color: black; }
+  .left-button.left-button,
+  .right-button.left-button {
+    text-align: left; }
+  .left-button.right-button,
+  .right-button.right-button {
+    text-align: right; }
+
+.turn-indicator {
+  flex: 1; }
+
+.small-text {
+  width: 100%;
+  font-size: 24px;
+  text-align: center;
+  letter-spacing: 0.05em;
+  color: black; }
+
+.copyright {
+  padding-top: 22px;
+  width: 100%;
+  font-size: 18px;
+  opacity: 0.3;
+  text-align: center;
+  letter-spacing: 0.05em;
+  color: black; }
+
+.ad-disclaimer {
+  padding-top: 24px;
+  padding-bottom: 8px;
+  width: 100%;
+  font-size: 16px;
+  opacity: 0.3;
+  text-align: center;
+  letter-spacing: 0.05em;
+  color: black; }
+
+.ad {
+  display: block;
+  width: 468px;
+  margin-left: auto;
+  margin-right: auto;
+  border: 0; }
+
+.container {
+  position: relative;
+  width: 520px;
+  height: 520px;
+  margin: auto;
+  border-radius: 20px;
+  background-color: #E5E9F2;
+  box-shadow: 0 6px 0 0 #D3DCE6, 0 15px 35px rgba(0, 0, 0, 0.03), 0 5px 15px rgba(0, 0, 0, 0.06);
+  contain: layout style; }
+
+.red .container,
+.blue .container {
+  box-shadow: 0 6px 0 0 #D3DCE6, 0 15px 35px rgba(0, 0, 0, 0.09), 0 5px 15px rgba(0, 0, 0, 0.14); }
+
+.board {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 10; }
+
+.board .row {
+  position: relative;
+  height: 130px;
+  width: 520px; }
+
+.board .tile {
+  position: absolute;
+  top: 0;
+  display: inline-block;
+  width: 110px;
+  height: 110px;
+  margin: 10px;
+  border-radius: 100%;
+  background-color: #D3DCE6;
+  box-shadow: inset 0 -2px 0 0 #8492A6;
+  transition: box-shadow 150ms ease-in-out; }
+  .board .tile.highlight-blue {
+    box-shadow: inset 0 0 0 6px #20A0FF; }
+  .board .tile.highlight-red {
+    box-shadow: inset 0 0 0 6px #FF4949; }
+  .board .tile.t1 {
+    left: 0; }
+  .board .tile.t2 {
+    left: 130px; }
+  .board .tile.t3 {
+    left: 260px; }
+  .board .tile.t4 {
+    left: 390px; }
+
+.game {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 520px;
+  height: 520px;
+  z-index: 20;
+  contain: layout style; }
+
+.game .disk {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: inline-block;
+  width: 110px;
+  height: 110px;
+  margin: 10px;
+  border-radius: 100%;
+  box-shadow: inset 0 2px 0 0 rgba(255, 255, 255, 0.2), 0 3px 10px rgba(0, 0, 0, 0);
+  transition: box-shadow 150ms ease-in-out;
+  will-change: transform; }
+  .game .disk.hover {
+    box-shadow: inset 0 2px 0 0 rgba(255, 255, 255, 0.2), 0 5px 15px rgba(0, 0, 0, 0.15);
+    z-index: 30; }
+
+.overlay {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  opacity: 1;
+  border-radius: 20px;
+  background-color: rgba(229, 233, 242, 0.6);
+  transition: opacity 400ms ease-in-out, z-index 450ms step-start;
+  z-index: 40; }
+  .overlay.hidden, .overlay > .hidden {
+    opacity: 0;
+    transition: opacity 400ms ease-in-out, z-index 450ms step-end;
+    z-index: -1; }
+
+.overlay-state {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: column;
+  align-content: center;
+  height: 100%; }
+
+.overlay .btn {
+  width: 286px;
+  height: 96px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 32px 0;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  letter-spacing: 0.15em;
+  color: #323232;
+  border-radius: 48px;
+  background-color: white;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.03), 0 5px 15px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 300ms ease-in-out;
+  margin-top: auto;
+  margin-bottom: auto;
+  opacity: 0.8; }
+  .overlay .btn:active {
+    box-shadow: 0 15px 35px rgba(0, 0, 0, 0.09), 0 5px 15px rgba(0, 0, 0, 0.14); }
+  .overlay .btn.disabled {
+    opacity: 0.3; }
+
+.overlay .text {
+  margin-top: auto;
+  margin-bottom: auto;
+  opacity: 0.8; }
+
+.won-game > .text:first-child {
+  margin-bottom: 0; }
+
+.blue .won-game > .text:first-child {
+  background-color: #20A0FF; }
+
+.red .won-game > .text:first-child {
+  background-color: #FF4949; }
+
+.popup {
+  position: absolute;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: white;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.09), 0 5px 15px rgba(0, 0, 0, 0.14);
+  z-index: 50;
+  transform: translate(0, 0);
+  transition: transform 500ms ease-in-out; }
+  .popup.hidden {
+    transform: translate(0, 100%); }
+
+.blue .popup {
+  background-color: #20A0FF; }
+
+.red .popup {
+  background-color: #FF4949; }
+
+.popup-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 520px;
+  height: 100%;
+  margin: auto;
+  transition: opacity 1000ms ease-in-out;
+  opacity: 1; }
+
+.popup.hidden .popup-container {
+  opacity: 0; }
+
+.popup-title {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 80px;
+  border-bottom: 3px solid black; }
+  .popup-title .small-text {
+    flex: 1;
+    line-height: 80px; }
+  .popup-title .stub-56 {
+    width: 56px;
+    height: 56px; }
+
+.popup-content {
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
+  flex: 1;
+  padding-top: 16px;
+  padding-bottom: 32px;
+  font-size: 28px;
+  font-family: -apple-system, BlinkMacSystemFont, Roboto, Helvetica, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  color: black; }
+
+.popup-content img {
+  width: 452px;
+  height: 500px;
+  padding-top: 16px;
+  padding-bottom: 32px; }
