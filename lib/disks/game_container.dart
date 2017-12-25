@@ -19,14 +19,9 @@ class GameContainer {
   final DivElement container;
   final Element body;
 
-  DivElement _board;
-  DivElement get board => _board;
-
+  DivElement _boardEl;
   DivElement _gameEl;
-  DivElement get gameEl => _gameEl;
-
-  DivElement _overlay;
-  DivElement get overlay => _overlay;
+  DivElement _overlayEl;
 
   GameMap _map;
   GameMap get map => _map;
@@ -48,17 +43,17 @@ class GameContainer {
   Map<GameState, DivElement> _stateDivs = {};
 
   GameContainer({this.container, this.body, DivElement gameInfo}) {
-    this._board = container.querySelector(".board");
+    this._boardEl = container.querySelector(".board");
     this._gameEl = container.querySelector(".game");
-    this._overlay = container.querySelector(".overlay");
+    this._overlayEl = container.querySelector(".overlay");
 
-    _map = new GameMap(_board);
+    _map = new GameMap(_boardEl);
     _mechanics = new GameMechanics(map);
     _info = new GameInfo(this, gameInfo);
 
     map.forEach((Disk disk) {
       if (disk != null) {
-        gameEl.append(disk.element);
+        _gameEl.append(disk.element);
       }
     });
 
@@ -70,10 +65,12 @@ class GameContainer {
     setGameState(NewGameState);
   }
 
+  // main game state
+
   void addGameState(GameState state) {
     _states[state.runtimeType] = state;
     DivElement div = _stateDivs[state] = state.isOverlay ?
-        overlay.querySelector(".${state.cssName}") :
+        _overlayEl.querySelector(".${state.cssName}") :
         document.body.querySelector(".${state.cssName}");
 
     state.init(div);
@@ -86,15 +83,18 @@ class GameContainer {
 
     oldState?.pop(_stateDivs[oldState]);
     if ((oldState == null || oldState.isOverlay) && !newState.isOverlay) {
-      overlay.classes.add("hidden");
+      _overlayEl.classes.add("hidden");
     }
 
     if (newState.isOverlay) {
-      overlay.classes.remove("hidden");
+      _overlayEl.classes.remove("hidden");
     }
 
     newState.push(_stateDivs[newState]);
   }
+
+  // modal state is an optional state on-top of the game state
+  // i.e. how-to menu
 
   void setModalState(Type stateType) {
     if (this.modalState != null) {

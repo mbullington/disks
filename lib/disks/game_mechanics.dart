@@ -5,11 +5,11 @@ class GameMechanics {
 
   GameMechanics(this.map);
 
-  GameColor _checkHorLines(int row) {
+  GameColor _getResult(List<Disk> disks) {
     int redCount = 0;
     int blueCount = 0;
 
-    map[row].forEach((disk) {
+    disks.forEach((disk) {
       if (disk == null) {
         return;
       }
@@ -34,106 +34,40 @@ class GameMechanics {
     return null;
   }
 
+  GameColor _checkHorLines(int row) {
+    return _getResult([
+      map[row][0],
+      map[row][1],
+      map[row][2],
+      map[row][3]
+    ]);
+  }
+
   GameColor _checkVertLines(int row) {
-    int redCount = 0;
-    int blueCount = 0;
-
-    _checkDisk(disk) {
-      if (disk == null) {
-        return;
-      }
-
-      if (disk.color == GameColor.RED) {
-        redCount++;
-      }
-
-      if (disk.color == GameColor.BLUE) {
-        blueCount++;
-      }
-    }
-
-    _checkDisk(map[0][row]);
-    _checkDisk(map[1][row]);
-    _checkDisk(map[2][row]);
-    _checkDisk(map[3][row]);
-
-    if (redCount == 4) {
-      return GameColor.RED;
-    }
-
-    if (blueCount == 4) {
-      return GameColor.BLUE;
-    }
-    
-    return null;
+    return _getResult([
+      map[0][row],
+      map[1][row],
+      map[2][row],
+      map[3][row]
+    ]);
   }
 
   GameColor _checkBox(int x, int y) {
-    int redCount = 0;
-    int blueCount = 0;
-
-    _checkDisk(disk) {
-      if (disk == null) {
-        return;
-      }
-
-      if (disk.color == GameColor.RED) {
-        redCount++;
-      }
-
-      if (disk.color == GameColor.BLUE) {
-        blueCount++;
-      }
-    }
-
-    _checkDisk(map[x][y]);
-    _checkDisk(map[x + 1][y]);
-    _checkDisk(map[x + 1][y + 1]);
-    _checkDisk(map[x][y + 1]);
-
-    if (redCount == 4) {
-      return GameColor.RED;
-    }
-
-    if (blueCount == 4) {
-      return GameColor.BLUE;
-    }
-    
-    return null;
+    return _getResult([
+      map[x][y],
+      map[x + 1][y],
+      map[x + 1][y + 1],
+      map[x][y + 1]
+    ]);
   }
 
   GameColor _checkCorners() {
-    int redCount = 0;
-    int blueCount = 0;
-
-    _checkDisk(disk) {
-      if (disk == null) {
-        return;
-      }
-
-      if (disk.color == GameColor.RED) {
-        redCount++;
-      }
-
-      if (disk.color == GameColor.BLUE) {
-        blueCount++;
-      }
-    }
-
-    _checkDisk(map[0][0]);
-    _checkDisk(map[0][3]);
-    _checkDisk(map[3][3]);
-    _checkDisk(map[3][0]);
-
-    if (redCount == 4) {
-      return GameColor.RED;
-    }
-
-    if (blueCount == 4) {
-      return GameColor.BLUE;
-    }
-    
-    return null;
+    return _getResult([
+      map[0][0],
+      map[0][3],
+      map[3][3],
+      map[3][0]
+    ]);
   }
 
   GameColor getWinner() {

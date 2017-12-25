@@ -20,8 +20,8 @@ class LocalGameState extends GameState {
   void push(DivElement div) {
     container.map.forEach((Disk disk) {
       if (disk != null) {
-        _onClick(disk);
-        _onTouch(disk);
+        _addClickListeners(disk);
+        _addTouchListeners(disk);
       }
     });
 
@@ -54,7 +54,7 @@ class LocalGameState extends GameState {
     container.info.setTurnIndicator();
   }
 
-  void _onClick(Disk disk) {
+  void _addClickListeners(Disk disk) {
     num x = 0;
     num y = 0;
 
@@ -96,7 +96,7 @@ class LocalGameState extends GameState {
     }));
   } 
 
-  void _onTouch(Disk disk) {
+  void _addTouchListeners(Disk disk) {
     num x = 0;
     num y = 0;
 
