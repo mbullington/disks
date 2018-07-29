@@ -130,7 +130,6 @@ class LocalGameState extends GameState {
         // prevent pull-to-refresh on Chrome iOS
         // prevent rubber banding on Mobile Safari
         ev.preventDefault();
-        ev.stopPropagation();
         
         ev.changedTouches.forEach((Touch t) {
           if (t.identifier != identifier) {

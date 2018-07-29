@@ -3,19 +3,16 @@
 library disks;
 
 import "package:disks/disks.dart";
+import "package:pwa/client.dart" as pwa;
 
 import "dart:html";
 
 void main() {
-  GameContainer container = new GameContainer(
+  new pwa.Client();
+
+  new GameContainer(
       container: querySelector(".container"),
       gameInfo: querySelector(".game-info"),
       body: document.body,
-      );
-
-  window.onTouchMove.listen((TouchEvent e) {
-    if (container.modalState == null) {
-      e.preventDefault();
-    }
-  });
+  );
 }
